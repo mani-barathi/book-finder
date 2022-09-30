@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import BookCard from "../../components/bookcard/BookCard";
 import "./HomePage.css";
 import { books as originalBooks, genreOptions } from "../../utils/books";
+import { ALL_GENRE, EMPTY_STRING } from "../../utils/constant";
 
 function HomePage() {
-  const [genre, setGenre] = useState("all");
-  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState(ALL_GENRE);
+  const [search, setSearch] = useState(EMPTY_STRING);
 
   function filterBooks(search, genre) {
     let filteredBooks = originalBooks;
 
-    if (genre === "all" && search === "") {
+    if (genre === ALL_GENRE && search === EMPTY_STRING) {
       return filteredBooks;
     }
 
-    if (genre !== "all") {
+    if (genre !== ALL_GENRE) {
       filteredBooks = originalBooks.filter((book) => book.genre === genre);
     }
 
-    if (search !== "") {
+    if (search !== EMPTY_STRING) {
       const keyword = search.toLowerCase();
       filteredBooks = filteredBooks.filter((book) =>
         book.title.toLowerCase().includes(keyword)
