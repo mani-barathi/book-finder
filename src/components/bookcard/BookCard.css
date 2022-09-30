@@ -1,7 +1,7 @@
 .book-card {
   padding: 16px;
   text-decoration: none;
-  width: 200px;
+  width: 240px;
   border: 1px solid rgb(216, 216, 216);
   border-radius: 5px;
   box-shadow: 0 8px 6px -6px rgba(0, 0, 0, 0.233);
@@ -13,12 +13,12 @@
 }
 
 .book-card-image {
-  height: 250px;
-  width: 168px;
+  height: 340px;
+  width: 208px;
 }
 
 .book-card-img {
-  height: 250px;
+  height: 340px;
   width: 100%;
   object-fit: cover;
 }
