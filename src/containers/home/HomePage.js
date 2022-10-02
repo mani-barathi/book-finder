@@ -3,6 +3,7 @@ import BookCard from "../../components/bookcard/BookCard";
 import "./HomePage.css";
 import { books as originalBooks, genreOptions } from "../../utils/books";
 import { ALL_GENRE, EMPTY_STRING } from "../../utils/constant";
+import SearchableSelect from "../../components/SearchableSelect";
 
 function HomePage() {
   const [genre, setGenre] = useState(ALL_GENRE);
@@ -41,16 +42,11 @@ function HomePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <select
-              className="select-genre"
-              onChange={(e) => setGenre(e.target.value)}
-            >
-              {genreOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
+            <SearchableSelect
+              options={genreOptions}
+              value={genre}
+              setValue={setGenre}
+            />
           </div>
         </div>
       </div>
