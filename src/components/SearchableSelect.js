@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 
 function SearchableSelect({ options, value, setValue }) {
   const [items, setItems] = useState(options);
-  const [text, setText] = useState("");
   const [show, setShow] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [text, setText] = useState(value);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const selectedItemRef = useRef(null);
-  const btnRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => setText(value), [value]);
 
   useEffect(() => {
     if (!selectedItemRef.current) return;
@@ -17,19 +19,28 @@ function SearchableSelect({ options, value, setValue }) {
     });
   }, [selectedIndex]);
 
-  function closeDropDown() {
+  function onFocus() {
     setText("");
-    setItems(options);
+    setShow(true);
+  }
+
+  function onBlur() {
+    setText(value);
+    closeDropDown();
+  }
+
+  function closeDropDown() {
     setShow(false);
-    setSelectedIndex(0);
+    setItems(options);
+    setSelectedIndex(-1);
+    inputRef.current?.blur(); // when the user presses Esc, focusout will not work automatically
   }
 
   function handleOptionClick(e) {
     if (e.target.innerText !== value && e.target.innerText !== "") {
       setValue(e.target.innerText);
-      setText("");
+      closeDropDown();
     }
-    setShow(null);
   }
 
   function filterGenre(e) {
@@ -50,16 +61,19 @@ function SearchableSelect({ options, value, setValue }) {
 
   function handleKeyDown(e) {
     if (e.key === "ArrowUp" && selectedIndex !== 0) {
-      const newIndex = (prev) => (prev - 1) % items.length;
+      const newIndex = selectedIndex - 1;
+      setText(items[newIndex]);
       return setSelectedIndex(newIndex);
     }
 
     if (e.key === "ArrowDown" && selectedIndex !== items.length - 1) {
-      const newIndex = (prev) => (prev + 1) % items.length;
+      const newIndex = selectedIndex + 1;
+      setText(items[newIndex]);
       return setSelectedIndex(newIndex);
     }
 
     if (e.key === "Escape") {
+      setText(value);
       return closeDropDown();
     }
 
@@ -69,36 +83,20 @@ function SearchableSelect({ options, value, setValue }) {
     }
   }
 
-  function onBlur(e) {
-    if (e.relatedTarget !== btnRef.current) closeDropDown();
-  }
-
   return (
-    <div className="select-container">
-      <button
-        className="select-btn"
-        onClick={() => setShow((p) => !p)}
-        ref={btnRef}
-      >
-        <div>{value}</div>
-        {show ? <span>&uArr;</span> : <span>&dArr;</span>}
-      </button>
+    <div className="select-container" tabIndex={0} onKeyDown={handleKeyDown}>
+      <input
+        ref={inputRef}
+        value={text}
+        onChange={filterGenre}
+        className="select-search"
+        placeholder="Genre"
+        onBlur={onBlur}
+        onFocus={onFocus}
+      />
 
       {show && (
-        <div
-          className="options-container"
-          tabIndex={0}
-          onKeyDown={handleKeyDown}
-        >
-          <input
-            value={text}
-            onChange={filterGenre}
-            className="select-search"
-            placeholder="Genre"
-            autoFocus
-            onBlur={onBlur}
-          />
-
+        <div className="options-container">
           <div className="options-list">
             {items.map((item, idx) => (
               <option
