@@ -1,3 +1,4 @@
+import { ALL_GENRE, EMPTY_STRING } from "./constant";
 export const genreOptions = ["all", "novel", "sci-fi", "fantasy", "romance"];
 
 export const books = [
@@ -66,4 +67,25 @@ export function getBookByslug(slug) {
     if (book.slug === slug) return book;
   }
   return null;
+}
+
+export function filterBooks(originalBooks, search, genre) {
+  let filteredBooks = originalBooks;
+
+  if (genre === ALL_GENRE && search === EMPTY_STRING) {
+    return filteredBooks;
+  }
+
+  if (genre !== ALL_GENRE) {
+    filteredBooks = originalBooks.filter((book) => book.genre === genre);
+  }
+
+  if (search !== EMPTY_STRING) {
+    const keyword = search.toLowerCase();
+    filteredBooks = filteredBooks.filter((book) =>
+      book.title.toLowerCase().includes(keyword)
+    );
+  }
+
+  return filteredBooks;
 }
